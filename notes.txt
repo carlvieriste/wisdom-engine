@@ -1,0 +1,51 @@
+Preprocessing
+- Distinguer les questions (éliminer les non-questions?)
+- Éliminer les submissions sans contenu (lien seul)
+
+Processus V2
+1.  Pré-entrainement: Paragraph Vectors
+        Q' = f(Q)
+        R' = f(R)
+2.  Entrainement: Prédire R' associé à Q'
+        RBM avec Q' en entrée et R' en sortie
+        R' = g(Q')
+
+3.  Inférence: Associer des paragraphes de la littérature à des nouvelles questions
+        On a:   Q                   nouvelle question
+                R1, R2, ..., Rn     paragraphes de la littérature
+                R1', R2', ... Rn'   paragraphes représentés
+                h <- f o g          prend une question et retourne R'
+
+        R' = h(Q)
+        R_idx = NearestNeighbor(R', [R1', R2', ... Rn'])
+        R = Reponses[R_idx]
+
+        On obtient R, le paragraphe associé à la question Q. Il serait facile d'obtenir plusieurs R similaires.
+
+
+
+
+
+
+Processus V1
+1.  Entrainement: Prédire la distribution R associée à la distribution Q
+        -> on veut utiliser une représentation compacte des distributions
+
+          f1    f2    f3
+        Q -> Q' -> R' -> R      où  Q, R sont des distributions
+                                    Q', R' sont des vecteurs
+
+        On obtient:     f1  qui permet de représenter les nouvelles questions
+                        f3  (transposé) qui permet de représenter les réponses de notre banque
+                        f2  qui permet de trouver où chercher une réponse à une certaine question
+        Problème: distribution ne tient pas compte de l'ordre des mots
+
+2.  Inférence: Associer des paragraphes de la littérature à des nouvelles questions
+        On a:   Q                   nouvelle question
+                R1, R2, ..., Rn     paragraphes de la littérature
+                R1', R2', ... Rn'   paragraphes représentés
+                f <- f2(f1(.))      prend une question et retourne R'
+
+        R' = f(Q)
+        R_idx = NearestNeighbor(R', [R1', R2', ... Rn'])
+        R = Reponses[R_idx]
