@@ -57,11 +57,14 @@ def extract_qa(filename):
 
 D = 512
 
-# Preparer dataset    taoism_1482257353.98838.yaml  3jd7hj.yaml
-raw_questions, raw_answers = extract_qa_ama('data/3jd7hj.yaml')
+# Preparer dataset
+print('Loading data')
+# raw_questions, raw_answers = extract_qa_ama('data/3jd7hj.yaml')
+raw_questions, raw_answers = extract_qa('data/taoism_1482257353.98838.yaml')
 
 # Texts to matrix of representations
-raw_all_texts = raw_questions + raw_answers
+print('Analyzing corpus')
+raw_all_texts = raw_answers  # raw_questions + raw_answers
 tokenizer = keras.preprocessing.text.Tokenizer()
 tokenizer.fit_on_texts(raw_all_texts)
 index_to_word = {}
@@ -70,7 +73,8 @@ for word, idx in tokenizer.word_index.items():
 all_repr = tokenizer.texts_to_matrix(raw_all_texts, 'tfidf')
 
 # Keep best words
-word_importance = np.sum(all_repr, axis=0)
+print('Finding best words')
+word_importance = np.linalg.norm(all_repr, axis=0, ord=2)  # np.sum(all_repr, axis=0)
 best_words = np.argsort(word_importance)[::-1][:D]
 for widx in best_words:
     print("{:>20} {}".format(index_to_word[widx], word_importance[widx]))
