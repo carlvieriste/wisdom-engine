@@ -11,9 +11,9 @@
 #   Désavantages:   - Imprécisions dûes au stemming
 #                   - Pas de relation entre les mots (embeddings)
 
-import yaml
 import numpy as np
-import keras.preprocessing.text
+import sklearn.feature_extraction.text
+import yaml
 
 
 def load_yaml(filename):
@@ -64,13 +64,13 @@ raw_questions, raw_answers = extract_qa('data/taoism_1482257353.98838.yaml')
 
 # Texts to matrix of representations
 print('Analyzing corpus')
-raw_all_texts = raw_answers  # raw_questions + raw_answers
-tokenizer = keras.preprocessing.text.Tokenizer()
-tokenizer.fit_on_texts(raw_all_texts)
+raw_all_texts = raw_questions  # raw_questions + raw_answers
+vectorizer = sklearn.feature_extraction.text.TfidfVectorizer(stop_words='english')
+all_repr = vectorizer.fit_transform(raw_all_texts)
+all_repr = all_repr.toarray()
 index_to_word = {}
-for word, idx in tokenizer.word_index.items():
+for word, idx in vectorizer.vocabulary_.items():
     index_to_word[idx] = word
-all_repr = tokenizer.texts_to_matrix(raw_all_texts, 'tfidf')
 
 # Keep best words
 print('Finding best words')
