@@ -15,6 +15,41 @@ import yaml
 import numpy as np
 import keras.preprocessing.text
 
+
+def load_yaml(filename):
+    yaml_data = {}
+    with open(filename, 'r') as file:
+        try:
+            yaml_data = yaml.load(file)
+        except yaml.YAMLError as exc:
+            print(exc)
+            exit()
+    return yaml_data
+
+
+def extract_qa_ama(filename):
+    yaml_data = load_yaml(filename)
+    raw_questions = []
+    raw_answers = []
+    for q in yaml_data['comments']:
+        raw_questions.append(q['body'])
+        raw_answers.append(q['__replies'][0]['body'])
+    return raw_questions, raw_answers
+
+
+def extract_qa(filename):
+    yaml_data = load_yaml(filename)
+    raw_questions = []
+    raw_answers = []
+    for q in yaml_data:
+        if len(q['selftext']) == 0:
+            continue
+        raw_questions.append(q['selftext'])
+        for a in q['__comments']:
+            raw_answers.append(a['body'])
+    return raw_questions, raw_answers
+
+
 # 1. Representation =================================================
 #   1.1 Porter stemming     TODO relation mot -> remplacement
 #   1.2 TF-IDF              importance de chaque mot : obtenir matrice tfdif(i,j) = importance de j dans i
@@ -22,19 +57,8 @@ import keras.preprocessing.text
 
 D = 512
 
-# Preparer dataset
-yaml_data = {}
-with open('data/3jd7hj.yaml', 'r') as file:
-    try:
-        yaml_data = yaml.load(file)
-    except yaml.YAMLError as exc:
-        print(exc)
-        exit()
-raw_questions = []
-raw_answers = []
-for q in yaml_data['comments']:
-    raw_questions.append(q['body'])
-    raw_answers.append(q['__replies'][0]['body'])
+# Preparer dataset    taoism_1482257353.98838.yaml  3jd7hj.yaml
+raw_questions, raw_answers = extract_qa_ama('data/3jd7hj.yaml')
 
 # Texts to matrix of representations
 raw_all_texts = raw_questions + raw_answers
