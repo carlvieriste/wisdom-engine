@@ -1,3 +1,7 @@
+TODO
+    - Télécharger la littérature
+    - Classification des paragraphes de littérature
+
 Preprocessing
 - Distinguer les questions (éliminer les non-questions?)
 - Éliminer les submissions sans contenu (lien seul)

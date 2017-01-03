@@ -51,7 +51,7 @@ def extract_qa(filename):
 
 
 # 1. Representation =================================================
-#   1.1 Porter stemming     TODO relation mot -> remplacement
+#   1.1 TODO Stemming       relation mot -> remplacement
 #   1.2 TF-IDF              importance de chaque mot : obtenir matrice tfdif(i,j) = importance de j dans i
 #   1.3 Afficher les D mots les plus importants du corpus
 
@@ -60,7 +60,8 @@ D = 512
 # Preparer dataset
 print('Loading data')
 # raw_questions, raw_answers = extract_qa_ama('data/3jd7hj.yaml')
-raw_questions, raw_answers = extract_qa('data/taoism_1482257353.98838.yaml')
+# confucianism_1482268487.045067  taoism_1482257353.98838
+raw_questions, raw_answers = extract_qa('data/confucianism_1482268487.045067.yaml')
 
 # Texts to matrix of representations
 print('Analyzing corpus')
