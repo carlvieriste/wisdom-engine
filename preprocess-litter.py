@@ -31,18 +31,17 @@ def parse_paragraph(text):
     if second is not None:
         CUR_CHAPTER = first
         CUR_SUBCHAPTER = second
-        (chapter, subchapter) = (first, second)
     elif first is not None:
-        CUR_SUBCHAPTER = first
-        (chapter, subchapter) = (CUR_CHAPTER, first)
-    else:
-        (chapter, subchapter) = (CUR_CHAPTER, CUR_SUBCHAPTER)
+        if first > CUR_SUBCHAPTER + 1:  # Case: chapter_number newline subchapter_number
+            CUR_CHAPTER, CUR_SUBCHAPTER = first, 1
+        else:
+            CUR_SUBCHAPTER = first
 
     if len(tokens) == 0:
         return None
 
     content = ' '.join(tokens)
-    return (chapter, subchapter), content
+    return (CUR_CHAPTER, CUR_SUBCHAPTER), content
 
 
 parser = etree.HTMLParser(remove_comments=True, remove_blank_text=True)
@@ -52,10 +51,13 @@ root = tree.getroot()  # root est l'element html
 paragraphs = []
 for element in root.iter("p", "pre"):
     content = element.text.strip()
-    if len(content) == 0 or content.startswith('The Project Gutenberg'):
+    if len(content) == 0 or content.startswith('The Project Gutenberg')\
+            or content.startswith('End of the Project Gutenberg'):
         continue
     parsed_content = parse_paragraph(element.text)
     if parsed_content is not None:
         paragraphs.append(parsed_content)
 
-paragraphs[0:20]
+with open('data/Tao-Teh-King_preprocessed.txt', 'w') as file:
+    for p in paragraphs:
+        file.write('{}\t{}\t{}\n'.format(str(p[0][0]), str(p[0][1]), p[1]))
