@@ -1,5 +1,6 @@
 TODO
-    - Télécharger la littérature
+    - Preprocess la littérature
+        - Chapitres complets ou paragraphes? (Tao Teh King)
     - Classification des paragraphes de littérature
 
 Preprocessing
